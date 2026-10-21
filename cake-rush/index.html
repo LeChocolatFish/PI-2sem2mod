@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cake Rush</title>
+  <link rel="icon" href="assets/favicon.ico">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <div id="game" class="game" aria-label="Protótipo Cake Rush">
+      <div id="scene" class="scene"></div>
+      <div id="logo-top" class="logo-top hidden" aria-label="Cake Rush">Cake<br><span>Rush</span></div>
+
+      <div id="hud" class="hud hidden">
+        <div class="hud-left">
+          <button class="hud-pill recipe-btn" data-action="recipe" title="Ver receita">
+            <img src="assets/icone-bolo.PNG" width="18" alt="">
+            <span>Receita</span>
+          </button>
+          <span class="hud-pill score-pill">
+            <img src="assets/icone-estrela.PNG" width="19" alt="">
+            <span id="score">0</span> pts
+            <span id="score-fly" class="score-fly" aria-hidden="true"></span>
+          </span>
+          <span class="hud-pill recipe-name" id="recipe-name">Bolo de Baunilha</span>
+        </div>
+        <div class="hud-right">
+          <span class="hud-pill">Passo <span id="step-label">1</span>/10</span>
+        </div>
+      </div>
+
+      <div id="overlay" role="region" aria-label="Tela do jogo"></div>
+      <div id="toast" class="toast" aria-live="polite"></div>
+    </div>
+  </main>
+  <script src="js/data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/cake.js"></script>
+  <script src="js/screens.js"></script>
+  <script src="js/kitchen.js"></script>
+  <script src="js/decoration.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

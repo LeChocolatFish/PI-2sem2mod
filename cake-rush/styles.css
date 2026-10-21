@@ -1,0 +1,350 @@
+:root {
+  --blue: #5e9cf0;
+  --blue-dark: #3e73c7;
+  --cream: #fff1d7;
+  --paper: #fff8ea;
+  --red: #f23b35;
+  --red-dark: #cb2724;
+  --green: #5fcb62;
+  --gold: #f2b83f;
+  --ink: #4c3a2c;
+  --shadow: rgba(72, 48, 29, .28);
+}
+* { box-sizing:border-box; }
+html,body { height:100%; }
+body { margin:0; font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif; color:var(--ink); overflow:hidden; background:#fff2dd; }
+button { font:inherit; }
+.shell { width:100%; height:100%; display:grid; place-items:center; padding:16px; }
+.game { width:min(1500px,96vw); aspect-ratio:16/9; position:relative; overflow:hidden; border:7px solid #f8e9cf; border-radius:20px; box-shadow:0 16px 48px rgba(56,51,78,.30); background:var(--cream); user-select:none; }
+.scene { position:absolute; inset:0; background:#f6ead4 center/cover no-repeat; transition:background-image .18s ease; }
+.scene.bg-splash { background-image:url('assets/p1.png'); background-size:cover; background-position:center; }
+.scene.bg-title,.scene.bg-menu,.scene.bg-loaded,.scene.bg-result,.scene.bg-finish,.scene.bg-select,.scene.bg-decor { background-image:url('assets/background-panel.png'); background-size:cover; }
+.scene.bg-load,.scene.bg-tutorial { background-image:url('assets/background-stripes.png'); background-size:cover; }
+.scene.bg-kitchen { background-image:url('assets/kitchen.png'); background-size:cover; background-position:center; }
+.scene.bg-mixer { background-image:url('assets/mixer-bg.png'); background-size:cover; background-position:center; }
+.scene.bg-spoon { background-image:url('assets/spoon-bg.png'); background-size:cover; background-position:center; }
+.scene.bg-oven { background-image:url('assets/oven-bg.png'); background-size:cover; background-position:center; }
+.scene.bg-oven-ready { background-image:url('assets/oven-ready-bg.png'); background-size:cover; background-position:center; }
+.hidden { display:none !important; }
+.logo-top { position:absolute; left:50%; top:14px; transform:translateX(-50%); z-index:75; color:var(--red); font-weight:1000; font-style:italic; text-align:center; line-height:.74; letter-spacing:-2px; text-shadow:3px 3px 0 #fff5de; font-size:clamp(32px,5vw,68px); pointer-events:none; }
+.logo-top span { margin-left:10px; }
+.hud { position:absolute; inset:0 0 auto 0; padding:14px; display:flex; justify-content:space-between; pointer-events:none; z-index:80; }
+.hud-left,.hud-right { display:flex; gap:9px; align-items:center; flex-wrap:wrap; }
+.hud-pill { pointer-events:auto; background:rgba(255,248,234,.96); border:3px solid #d9b687; border-radius:999px; padding:8px 13px 10px; font-weight:700; box-shadow:0 4px 0 rgba(113,73,34,.14); white-space:nowrap; position: relative; gap: 10px;}
+.recipe-btn { cursor:pointer; transition:transform .16s ease, filter .16s ease; }
+.recipe-btn:hover { transform:translateY(-3px) scale(1.04); filter:brightness(1.03); }
+.recipe-name { max-width:310px; overflow:hidden; text-overflow:ellipsis; }
+.score-pill { min-width:128px; text-align:center; }
+.score-fly { position:absolute; left:50%; top:0; transform:translate(-50%,-80%); opacity:0; font-size:22px; color:#f0a314; font-weight:1000; pointer-events:none; }
+.score-fly.show { animation:scoreFly 1s ease forwards; }
+@keyframes scoreFly { 0%{opacity:0;transform:translate(-50%,20% ) scale(.7)}18%{opacity:1}100%{opacity:0;transform:translate(-50%,-150%) scale(1.2)} }
+#overlay { position:absolute; inset:0; z-index:20; pointer-events:none; }
+#overlay > * { pointer-events:auto; }
+.center-card { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); min-width:min(620px,78%); max-width:90%; padding:30px 34px; border-radius:22px; background:rgba(255,248,234,.96); border:4px solid #d3ae78; box-shadow:0 16px 34px var(--shadow); text-align:center; }
+.center-card h1,.center-card h2,.center-card p { margin:0 0 12px; }
+.center-card h1 { font-size:clamp(34px,5vw,66px); color:var(--red); text-shadow:3px 3px 0 #fff1dc; }
+.center-card h2 { font-size:clamp(22px,3vw,38px); color:var(--red); }
+.center-card p { font-size:clamp(16px,1.7vw,22px); line-height:1.4; }
+.center-card .small-copy { font-size:15px; opacity:.78; }
+.btn { position:relative; cursor:pointer; border:0; border-radius:18px; padding:13px 28px; background:var(--red); color:#fff; font-weight:900; font-size:20px; box-shadow:0 7px 0 var(--red-dark); transition:transform .12s, box-shadow .12s; margin:6px; }
+.btn:hover { transform:translateY(-4px) scale(1.03); box-shadow:0 10px 0 var(--red-dark); }
+.btn:active { transform:translateY(2px); box-shadow:0 3px 0 var(--red-dark); }
+.btn.secondary { background:#5e9cf0; box-shadow:0 7px 0 #3d74c6; }
+.btn.secondary:hover { box-shadow:0 10px 0 #3d74c6; }
+.btn.green { background:var(--green); box-shadow:0 7px 0 #3c9b40; }
+.btn.gold { background:#f0b83c; color:#5a3d10; box-shadow:0 7px 0 #bc8a20; }
+.btn.small { font-size:16px; padding:10px 18px; border-radius:14px; }
+.click-pulse { animation:clickPulse .35s ease; }
+@keyframes clickPulse { 0%{transform:scale(1)}45%{transform:scale(.95)}100%{transform:scale(1)} }
+.full-click { position:absolute; inset:0; width:100%; height:100%; cursor:pointer; background:transparent; border:0; padding:0; z-index:4; display:block; }
+.splash-label { position:absolute; left:50%; bottom:9%; transform:translateX(-50%); font-size:clamp(18px,2vw,30px); font-weight:800; color:#284d84; text-shadow:1px 2px 0 rgba(255,255,255,.55); animation:blink 1.3s ease-in-out infinite; }
+@keyframes blink { 50%{opacity:.46} }
+.load-card { min-width:min(760px,82%); background:rgba(255,248,234,.93); }
+.load-logo { margin-top:-10px; margin-bottom:22px; color:var(--red); font-size:clamp(48px,8vw,92px); font-weight:1000; font-style:italic; line-height:.7; text-shadow:4px 4px 0 #fff0d2; }
+.progress { height:22px; border-radius:999px; border:3px solid #d0a76f; background:#fff0d9; overflow:hidden; }
+.progress > div { width:0; height:100%; background:linear-gradient(90deg,#f36a42,#f4b740,#72cf69); transition:width .2s ease; }
+.tooltip { position:absolute; background:rgba(255,248,234,.97); border:3px solid #d2a86d; border-radius:14px; padding:10px 14px; font-weight:800; box-shadow:0 8px 18px var(--shadow); max-width:430px; }
+.hotspot { position:absolute; border:3px solid transparent; border-radius:18px; cursor:pointer; transition:transform .18s ease,background .18s ease,border-color .18s ease,filter .18s ease; }
+.hotspot:hover { transform:scale(1.04); background:rgba(255,255,255,.16); border-color:rgba(242,59,53,.72); filter:drop-shadow(0 0 8px rgba(242,59,53,.4)); }
+.hotspot:active { transform:scale(.98); }
+.hotspot.pulse::after { content:""; position:absolute; inset:0; border-radius:inherit; border:3px dashed rgba(242,59,53,.9); animation:dash 1.1s linear infinite; }
+@keyframes dash { to{transform:rotate(.5deg)} }
+.hotspot-cabinet{left:19%;top:6%;width:61%;height:27%}.hotspot-fridge{left:1.5%;top:21%;width:17%;height:59%}.hotspot-mold{left:54%;top:62%;width:19%;height:20%}.hotspot-mixer{left:46%;top:33%;width:18%;height:27%}.hotspot-oven{left:68%;top:43%;width:21%;height:37%}.hotspot-bowl{left:86%;top:64%;width:13%;height:22%}
+.inventory-note { position:absolute; left:3%; bottom:3%; background:rgba(255,248,234,.96); border:3px solid #d3ae78; padding:10px 14px; border-radius:14px; font-weight:900; z-index:4; box-shadow:0 7px 16px rgba(76,58,44,.15); }
+.modal { position:absolute; inset:0; display:grid; place-items:center; background:rgba(54,42,31,.34); z-index:45; }
+.panel { width:min(980px,90%); max-height:88%; overflow:auto; background:#fff8ea; border:4px solid #d4ad78; border-radius:22px; padding:24px; box-shadow:0 18px 42px rgba(50,35,22,.34); }
+.panel h2 { margin:0 0 8px; color:var(--red); }
+.panel p { margin:0 0 16px; line-height:1.4; }
+.item-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+.item { background:#fff1d7; border:3px solid #d8b37f; border-radius:16px; min-height:112px; padding:12px; cursor:pointer; text-align:center; transition:.16s; display:grid; place-items:center; position:relative; }
+.item:hover { transform:translateY(-4px) rotate(-.5deg); box-shadow:0 8px 14px rgba(75,52,31,.16); }
+.item.correct { background:#daf5db; border-color:#6ec971; animation:pop .28s ease; }.item.wrong { background:#ffe3e1; border-color:#e16e6a; animation:shake .3s ease; }
+.item .emoji { font-size:42px; }.item strong{display:block}.item small{opacity:.72}.item .tick{position:absolute;right:9px;top:6px;font-size:18px}
+@keyframes pop{50%{transform:scale(1.07)}}@keyframes shake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+.recipe-head { display:flex; gap:14px; justify-content:space-between; align-items:flex-start; }
+.recipe-head .cake-emoji { font-size:44px; }
+.recipe-layout { display:grid; grid-template-columns:1.1fr .9fr; gap:18px; }
+.recipe-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.ingredient { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; background:#f9ebd4; border:2px solid #ddbf90; border-radius:12px; font-weight:800; }
+.ingredient.done { background:#dff6df; border-color:#7ecf81; }
+.ingredient-photo { width:44px; height:44px; border-radius:12px; display:grid; place-items:center; font-size:28px; background:linear-gradient(145deg,#fffdf6,#f6d9ad); border:2px solid #d8b988; flex:none; }
+.ingredient-text { display:flex; align-items:center; gap:10px; min-width:0; }
+.badge { font-size:12px; padding:4px 7px; border-radius:999px; background:#fff; border:1px solid #c8ab7b; white-space:nowrap; }
+.recipe-preview-card { background:#fff3df; border:3px solid #d7b681; border-radius:18px; padding:14px; }
+.recipe-preview-card h3 { margin:0 0 10px; color:var(--red); }
+.preview-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.form-preview,.decor-preview { min-height:160px; border-radius:16px; background:#f9ead2; border:2px dashed #d0a76f; position:relative; overflow:hidden; display:grid; place-items:center; }
+.form-shape { width:100px;height:66px;border:10px solid #b8b8bf; border-radius:50%; box-shadow:inset 0 0 0 5px #e7e7ea, 0 7px 12px rgba(62,50,41,.2); background:#ececee; }
+.form-shape.square{border-radius:12px}.form-shape.heart{width:78px;height:78px;transform:rotate(-45deg);border-radius:10px 50% 50% 50%}.form-shape.ring{border-radius:50%;width:90px;height:90px;box-shadow:inset 0 0 0 22px #ececee, inset 0 0 0 32px #b8b8bf}.form-shape.flower{border-radius:50%;filter:drop-shadow(0 0 0 #b8b8bf)}.form-shape.star{clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 95%,50% 72%,21% 95%,32% 57%,2% 35%,39% 35%);background:#b8b8bf;border:0}.form-shape.rect{width:110px;height:72px;border-radius:12px}
+.cake-preview { width:110px;height:78px;border-radius:18px 18px 10px 10px;background:linear-gradient(#ff9ab5 0 20%,#f8d1ad 20%);border:4px solid #ab6a47;position:relative; box-shadow:inset 0 -7px 0 rgba(151,83,44,.1); }
+.cake-preview::before { content:""; position:absolute; left:14px; right:14px; top:-12px; height:22px; border-radius:50%; background:#ffb6cb; border:4px solid #ab6a47; }
+.cake-preview .spr { position:absolute; font-size:15px; }
+.recipe-steps { margin:14px 0 0; padding:12px 14px; background:#fff2de; border-radius:14px; border:2px dashed #d4ad78; font-size:14px; line-height:1.5; }
+.recipe-select { width:min(1020px,92%); }
+.recipe-cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-top:18px; }
+.recipe-card { background:#fff3df; border:3px solid #d5b27f; border-radius:18px; padding:16px; text-align:left; cursor:pointer; transition:.16s; box-shadow:0 6px 0 rgba(113,73,34,.08); }
+.recipe-card:hover { transform:translateY(-4px); border-color:#f0a33d; }
+.recipe-card .card-top { display:flex; align-items:center; gap:10px; margin-bottom:7px; }
+.recipe-card .card-emoji { font-size:36px; }.recipe-card h3{margin:0;color:var(--red);font-size:21px}.recipe-card p{margin:6px 0;font-size:14px;line-height:1.35}.recipe-tag{display:inline-block;margin-top:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid #d4b27e;font-size:12px;font-weight:900}
+.voice-button { width:54px;height:54px;border-radius:50%;border:0;background:#5e9cf0;color:#fff;cursor:pointer;font-size:27px;box-shadow:0 7px 0 #3d74c6; transition:.16s; }.voice-button:hover{transform:translateY(-3px)}.voice-button.active{background:#63c867;box-shadow:0 7px 0 #3c9b40;animation:voicePulse 1s infinite}.tutorial-row{display:flex;gap:18px;align-items:center;justify-content:center;margin:18px 0 8px;flex-wrap:wrap}.tutorial-text{text-align:left;max-width:520px}.tutorial-text p{margin-bottom:8px}
+@keyframes voicePulse{50%{transform:scale(1.08)}}
+/* Mixing rooms — only the supplied PDF-derived assets are used here. */
+.mix-stage { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+.mix-title { position:absolute; left:50%; top:4.7%; transform:translateX(-50%); z-index:8; background:rgba(255,248,234,.96); border:3px solid #d3aa74; border-radius:999px; padding:10px 18px; font-weight:1000; }
+.mixer-motion { position:absolute; left:50%; top:55%; width:165px; height:42px; transform:translate(-50%,-50%); border-bottom:8px solid #fff; opacity:.92; }
+.mixer-motion::before { content:""; position:absolute; width:52px; height:52px; left:54px; top:-39px; border-radius:50%; border:10px solid #e74d3d; border-right-color:transparent; border-bottom-color:#f5ddae; animation:spin 0.55s linear infinite; filter:drop-shadow(0 4px 3px rgba(0,0,0,.16)); }
+.mixer-motion::after { content:""; position:absolute; width:34px; height:86px; left:63px; top:-12px; border:8px solid #d5a55d; border-top-left-radius:18px; border-top-right-radius:18px; transform-origin:top center; animation:sway .55s ease-in-out infinite alternate; }
+@keyframes spin{to{transform:rotate(360deg)}} @keyframes sway{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
+.spoon-motion { position:absolute; width:140px;height:28px;left:57%;top:53%;border-radius:14px;background:linear-gradient(#d3a16a,#9c6b3f);transform-origin:8% 50%; animation:stir 1.1s ease-in-out infinite; z-index:8; box-shadow:0 5px 12px rgba(0,0,0,.18); }
+.spoon-motion::before { content:""; position:absolute; width:62px;height:22px;right:-44px;top:3px;border-radius:50%;background:#d8b389;border:5px solid #a77349; }
+.stir-ripple { position:absolute; width:120px;height:120px; left:54%; top:45%; transform:translate(-50%,-50%); border:6px dotted rgba(255,255,255,.82); border-radius:50%; animation:ripple 1.3s linear infinite; }
+@keyframes stir{0%,100%{transform:rotate(-22deg)}50%{transform:rotate(22deg)}} @keyframes ripple{0%{transform:translate(-50%,-50%) scale(.72);opacity:.2}50%{opacity:.8}100%{transform:translate(-50%,-50%) scale(1.2);opacity:0}}
+.mix-progress { position:absolute; width:min(620px,70%); height:20px; bottom:14%; left:50%; transform:translateX(-50%); background:#fff0d7; border:3px solid #d3aa74; border-radius:999px; overflow:hidden; }
+.mix-fill { width:0;height:100%;background:linear-gradient(90deg,#63c867,#f0b83c,#f36a42); transition:width .7s ease; }
+.mix-hint { position:absolute; left:50%; bottom:8.5%; transform:translateX(-50%); background:rgba(255,248,234,.93); border:3px solid #d3aa74; border-radius:14px; padding:9px 14px; font-weight:900; }
+.mix-back { position:absolute; right:24px; bottom:22px; }
+/* Oven */
+.oven-ui{position:absolute;left:50%;top:11%;transform:translateX(-50%);width:min(700px,80%);background:rgba(255,248,234,.94);border:4px solid #d3ae78;padding:18px;border-radius:20px;text-align:center;z-index:6}.oven-ui strong{font-size:28px;color:var(--red)}.cake-overlay{position:absolute;width:190px;height:120px;left:74%;top:56%;border-radius:28px;background:#e7ba8a;border:5px solid #8e5534;box-shadow:inset 0 -12px 0 rgba(115,57,21,.14)}.cake-overlay.choc{background:#8c4a2c}.cake-overlay.straw{background:#f49ab3}.cake-overlay::before{content:"";position:absolute;left:18px;right:18px;top:-18px;height:35px;border-radius:50%;background:rgba(255,238,211,.85);border:5px solid #8e5534}
+/* Decoration */
+.decor-shell { position:absolute; inset:0; display:flex; flex-direction:column; }
+.decor-topbar { display:flex; align-items:center; justify-content:space-between; padding:18px 24px 8px; z-index:5; }
+.decor-title { background:rgba(255,248,234,.95);border:3px solid #d4ad78;border-radius:16px;padding:10px 15px;font-weight:1000;color:var(--red); }
+.stage-steps { display:flex; gap:8px; background:rgba(255,248,234,.9); padding:8px; border-radius:999px; border:3px solid #d4ad78; }
+.stage-steps span { padding:7px 11px;border-radius:999px;font-size:12px;font-weight:900;opacity:.55; }.stage-steps .active{background:#ffd56e;opacity:1;}
+.decor-content { flex:1; display:grid; grid-template-columns:300px 1fr 300px; gap:16px; padding:10px 18px 18px; align-items:center; }
+.decor-panel { background:rgba(255,248,234,.95); border:3px solid #d4ad78; border-radius:18px; padding:14px; box-shadow:0 10px 24px rgba(64,44,27,.16); }
+.decor-panel h3 { margin:0 0 10px; color:var(--red); }.control-label{font-size:13px;font-weight:900;margin:10px 0 7px;}
+.swatches,.pattern-grid,.topping-grid{display:flex;flex-wrap:wrap;gap:9px}.swatch{width:38px;height:38px;border-radius:50%;border:4px solid #fff;box-shadow:0 0 0 2px #c9a77b;cursor:pointer;transition:.15s}.swatch:hover,.swatch.selected{transform:scale(1.12);box-shadow:0 0 0 4px #ef9e48}.mini-choice{padding:8px 10px;background:#fff1d7;border:2px solid #d3ae78;border-radius:12px;cursor:pointer;font-size:13px;font-weight:900}.mini-choice.selected{background:#ffe08f;border-color:#eeab42}.decor-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+/* cake render */
+.cake-area { position:relative; height:min(62vh,520px); display:grid; place-items:center; perspective:1000px; overflow:visible; }
+.camera-rig { width:430px; height:360px; position:relative; transform-style:preserve-3d; transition:transform 1.2s cubic-bezier(.2,.82,.25,1),filter .6s; }
+.camera-rig.top-view { transform:rotateX(66deg) translateY(-22px) scale(1.08); }
+.cake-3d { width:270px;height:230px;position:absolute;left:80px;top:64px;transform-style:preserve-3d; }
+.cake-side { position:absolute; left:0; right:0; top:38px; bottom:18px; border-radius:26px 26px 20px 20px; background:linear-gradient(90deg,rgba(0,0,0,.08),transparent 14%,transparent 82%,rgba(0,0,0,.1)), var(--frosting,#ffd5e3); border:5px solid #9b6042; box-shadow:inset 0 -14px 0 rgba(80,46,30,.08), 0 18px 26px rgba(80,45,25,.22); overflow:hidden; }
+.cake-top { position:absolute;left:0;right:0;top:0;height:78px;border-radius:50%;background:radial-gradient(circle at 38% 34%,rgba(255,255,255,.45),transparent 28%),var(--frosting,#ffd5e3);border:5px solid #9b6042;z-index:3; }
+.cake-base { position:absolute;left:12px;right:12px;bottom:0;height:28px;border-radius:50%;background:#cc885a;border:5px solid #9b6042;z-index:1; }
+.cake-pattern { position:absolute; inset:0; opacity:.7; pointer-events:none; }
+.pattern-smooth{background:none}.pattern-stripes{background:repeating-linear-gradient(90deg,rgba(255,255,255,.32) 0 11px,transparent 11px 23px)}.pattern-dots{background-image:radial-gradient(circle,rgba(255,255,255,.78) 0 5px,transparent 6px);background-size:28px 28px}.pattern-ruffle{background:repeating-linear-gradient(0deg,rgba(255,255,255,.28) 0 7px,transparent 7px 15px)}
+.sprinkle{position:absolute;width:8px;height:24px;border-radius:8px;background:#ef4a59;transform:rotate(25deg);z-index:5}.topping{position:absolute;z-index:8;cursor:pointer;filter:drop-shadow(0 4px 3px rgba(0,0,0,.16));font-size:30px;animation:placePop .25s ease}.piping-dot{position:absolute;width:18px;height:18px;border-radius:50%;background:var(--frosting,#fff);border:3px solid rgba(115,70,40,.45);z-index:7;animation:placePop .25s ease}.syrup-preview{position:absolute;inset:0;z-index:7;pointer-events:none}.syrup-line{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:11;filter:drop-shadow(0 3px 2px rgba(90,45,20,.18))}.top-canvas{position:absolute;left:1px;top:1px;width:268px;height:76px;border-radius:50%;z-index:10;cursor:crosshair;}
+@keyframes placePop{0%{transform:scale(.2);opacity:.2}100%{transform:scale(1);opacity:1}}
+.camera-note{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(255,248,234,.93);border:3px dashed #d3ae78;border-radius:14px;padding:9px 14px;font-weight:900;text-align:center;}
+.final-cake { transform:scale(1.03); }
+.decor-preview-mini { width:150px;height:90px;border-radius:24px 24px 12px 12px;background:linear-gradient(90deg,rgba(0,0,0,.06),transparent 14%,transparent 84%,rgba(0,0,0,.09)),var(--frosting,#ffb6c7);border:4px solid #9b6042;position:relative;box-shadow:0 8px 15px rgba(80,45,25,.18); }.decor-preview-mini::before{content:"";position:absolute;left:12px;right:12px;top:-16px;height:28px;border-radius:50%;background:var(--frosting,#ffb6c7);border:4px solid #9b6042}.decor-preview-mini::after{content:"🍓 ✨ 🍫";position:absolute;left:50%;top:8px;transform:translateX(-50%);font-size:19px;white-space:nowrap}
+.finish-card { min-width:min(760px,86%); }
+.toast { position:absolute; left:50%; bottom:22px; transform:translate(-50%,20px); opacity:0; background:#fff8ea; border:3px solid #d3ae78; border-radius:999px; padding:10px 16px; font-weight:1000; box-shadow:0 8px 18px rgba(69,49,31,.22); z-index:120; transition:.25s; }
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width: 1050px){.decor-content{grid-template-columns:240px 1fr}.decor-content>.decor-panel:last-child{grid-column:1/-1}.recipe-cards{grid-template-columns:repeat(2,minmax(0,1fr));}.item-grid{grid-template-columns:repeat(3,minmax(0,1fr));}.recipe-layout{grid-template-columns:1fr}.hud-left{max-width:82%}}
+@media (max-width: 760px){.game{width:100vw;aspect-ratio:auto;height:100vh;border:0;border-radius:0}.center-card{min-width:88%;padding:22px 20px}.recipe-cards{grid-template-columns:1fr}.item-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.decor-content{grid-template-columns:1fr;overflow:auto}.decor-panel:last-child{grid-column:auto}.cake-area{min-height:380px}.hud{padding:8px}.hud-pill{padding:6px 9px}.logo-top{top:8px}}
+
+/* V4 POLISH */
+.game { text-transform: uppercase; }
+.scene.bg-splash { background-image:url('assets/background-stripes.png'); }
+.splash-image { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1; pointer-events:none; user-select:none; }
+.splash-label { z-index:3; }
+.tutorial-scene { position:absolute; inset:0; }
+.chef-guide { position:absolute; left:4%; bottom:0; width:min(31vw,420px); max-height:68%; object-fit:contain; object-position:bottom left; z-index:4; filter:drop-shadow(0 12px 12px rgba(55,35,20,.16)); }
+.speech-bubble { position:absolute; left:27%; top:12%; width:min(510px,38%); background:#fff; border:5px solid #24160f; border-radius:30px; padding:18px 22px; z-index:5; box-shadow:0 10px 20px rgba(55,35,20,.12); }
+.speech-bubble::after { content:""; position:absolute; left:18%; bottom:-35px; width:54px; height:54px; background:#fff; border-right:5px solid #24160f; border-bottom:5px solid #24160f; transform:rotate(35deg) skew(-8deg); }
+.speech-bubble strong { display:block; color:var(--red); font-size:22px; margin-bottom:7px; }
+.speech-bubble span { display:block; font-weight:900; line-height:1.35; font-size:15px; }
+.tutorial-card { position:absolute; right:4%; top:25%; width:min(680px,62%); background:rgba(255,248,234,.97); border:4px solid #d3ae78; border-radius:22px; padding:20px 24px; box-shadow:0 16px 34px var(--shadow); z-index:6; }
+.tutorial-text { max-width:none; padding-right:72px; }
+.tutorial-text p { font-weight:900; }
+.tutorial-card .voice-button { position:absolute; right:22px; top:20px; }
+.tutorial-actions { text-align:center; margin-top:14px; }
+
+/* RECIPE MODAL LOCK + BETTER PHOTO-LIKE PREVIEWS */
+#recipe-modal { z-index:90; }
+#recipe-modal .panel { position:relative; }
+.recipe-btn[aria-disabled="true"] { pointer-events:none; opacity:.65; }
+
+/* REAL TOP VIEW: NO SQUASHING */
+.camera-transition { position:relative; width:430px; height:390px; display:grid; place-items:center; animation:cameraIn .85s ease both; }
+.camera-transition.final-top-view { animation:cameraTopSettle .65s ease both; }
+@keyframes cameraIn { 0%{opacity:0;transform:scale(.72) rotateX(-16deg)} 65%{opacity:1;transform:scale(1.04) rotateX(4deg)} 100%{opacity:1;transform:scale(1) rotateX(0)} }
+@keyframes cameraTopSettle { from{opacity:.35;transform:scale(.72) rotateX(-25deg)} to{opacity:1;transform:scale(1) rotateX(0)} }
+.top-cake-wrap { position:relative; width:360px; height:275px; display:grid; place-items:center; }
+.top-cake-wrap.mini { transform:scale(.62); transform-origin:center; margin:-40px auto; width:260px; height:210px; }
+.top-cake { width:340px; height:250px; position:relative; background:radial-gradient(circle at 36% 28%,rgba(255,255,255,.45),transparent 20%),var(--frosting,#ffd5e3); border:6px solid #9b6042; box-shadow:0 18px 28px rgba(80,45,25,.22), inset 0 -10px 0 rgba(80,46,30,.08); overflow:hidden; }
+.top-cake.form-round { border-radius:50%; }
+.top-cake.form-square { border-radius:26px; }
+.top-cake.form-heart { clip-path:polygon(50% 95%,8% 53%,4% 31%,12% 12%,30% 6%,50% 23%,70% 6%,88% 12%,96% 31%,92% 53%); border-radius:18px; }
+.top-cake.form-star { clip-path:polygon(50% 2%,61% 31%,94% 35%,68% 55%,77% 89%,50% 70%,23% 89%,32% 55%,6% 35%,39% 31%); border-radius:20px; }
+.top-cake.form-flower { border-radius:48% 52% 45% 55% / 56% 46% 54% 44%; }
+.top-cake.form-rect { width:350px; height:230px; border-radius:26px; }
+.top-cake.form-ring { border-radius:50%; background:radial-gradient(circle at center, #f7ead7 0 25%, transparent 26%), radial-gradient(circle at 36% 28%,rgba(255,255,255,.45),transparent 20%),var(--frosting,#ffd5e3); }
+.top-cake-shine { position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse at 38% 30%,rgba(255,255,255,.25),transparent 28%); }
+.top-piping,.bottom-piping { position:absolute; left:6%; right:6%; height:28px; z-index:12; pointer-events:none; }
+.top-piping { top:4px; }.bottom-piping { bottom:4px; }
+.piping-dot { background:none !important; border:0 !important; }
+.piping-dot, .top-piping, .bottom-piping { --pipe-color:#fffaf0; }
+.piping-dot { display:none; }
+.piping-dot { box-shadow:none; }
+.piping-dot { visibility:hidden; }
+.piping-dot { width:0;height:0; }
+.top-piping.piping-dot,.bottom-piping.piping-dot { background:repeating-radial-gradient(circle at 8px 50%,var(--pipe-color) 0 6px,transparent 7px 17px); }
+.top-piping.piping-ruffle,.bottom-piping.piping-ruffle { background:repeating-linear-gradient(0deg,transparent 0 4px,var(--pipe-color) 4px 8px,transparent 8px 13px); border-radius:50%; }
+.top-piping.piping-zigzag,.bottom-piping.piping-zigzag { background:linear-gradient(135deg,transparent 0 12%,var(--pipe-color) 13% 20%,transparent 21% 32%,var(--pipe-color) 33% 40%,transparent 41% 52%,var(--pipe-color) 53% 60%,transparent 61% 72%,var(--pipe-color) 73% 80%,transparent 81%); }
+
+/* SYRUP BISNAGA */
+.syrup-tool-card { display:flex; gap:12px; align-items:center; margin-top:14px; padding:12px; border-radius:16px; background:#fff1d7; border:2px dashed #d3ae78; }
+.syrup-tool-card p { margin:4px 0 0; font-size:12px; line-height:1.3; }
+.syrup-bottle { position:fixed; left:24px; bottom:95px; width:74px; height:120px; z-index:40; cursor:grab; transform:rotate(-16deg); filter:drop-shadow(0 8px 6px rgba(60,40,25,.2)); touch-action:none; }
+.syrup-bottle.dragging { cursor:grabbing; transform:rotate(-22deg) scale(1.05); }
+.bottle-body { position:absolute; left:10px; top:25px; width:55px; height:78px; border:4px solid #8e5534; border-radius:14px 14px 22px 22px; background:linear-gradient(90deg,rgba(255,255,255,.35),transparent 25%),var(--syrup,#f3b64a); }
+.bottle-cap { position:absolute; left:25px; top:9px; width:28px; height:22px; border-radius:8px 8px 3px 3px; background:#f2eadc; border:4px solid #8e5534; z-index:2; }
+.bottle-nozzle { position:absolute; left:32px; top:0; width:13px; height:17px; background:#8e5534; clip-path:polygon(25% 0,75% 0,100% 100%,0 100%); z-index:3; }
+.top-canvas { position:absolute; left:0; top:0; width:340px; height:250px; border-radius:inherit; z-index:20; cursor:crosshair; }
+.camera-label { position:absolute; top:2px; left:50%; transform:translateX(-50%); background:#fff8ea; border:3px solid #d3ae78; border-radius:999px; padding:8px 13px; font-weight:1000; z-index:25; }
+.camera-mini-arrow { font-size:50px; text-align:center; color:var(--red); animation:spinSlow 2s linear infinite; }
+@keyframes spinSlow { to{transform:rotate(360deg)} }
+.camera-mini-text { text-align:center; font-weight:1000; }
+
+/* TOPPING CARDS + PIPING PHOTO CARDS */
+.topping-card { width:76px; min-height:78px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; background:#fff1d7; border:3px solid #d3ae78; border-radius:14px; cursor:pointer; transition:.15s; }
+.topping-card span { font-size:28px; line-height:1; }
+.topping-card strong { font-size:10px; }
+.topping-card:hover,.topping-card.selected { transform:translateY(-3px); border-color:#ef9e48; background:#ffe8ae; }
+.piping-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
+.piping-card { background:#fff1d7; border:3px solid #d3ae78; border-radius:14px; padding:6px; cursor:pointer; text-align:center; transition:.15s; }
+.piping-card:hover,.piping-card.selected { transform:translateY(-3px); border-color:#ef9e48; background:#ffe8ae; }
+.piping-photo { height:64px; border-radius:10px; background:#f7ead7; border:2px solid #dfc29b; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; overflow:hidden; }
+.piping-nozzle { width:28px; height:28px; border:4px solid #7b6654; border-radius:6px 6px 11px 11px; background:linear-gradient(135deg,#d8d1c6,#fff); position:relative; }
+.piping-nozzle::after { content:""; position:absolute; bottom:-7px; left:8px; width:8px; height:8px; background:#7b6654; clip-path:polygon(0 0,100% 0,50% 100%); }
+.piping-sample { color:#fff; font-size:18px; text-shadow:0 1px 2px #8b5c39; letter-spacing:2px; }
+.top-cake .topping { font-size:25px; line-height:1; transform:translate(-50%,-50%); }
+.top-cake .topping:hover { transform:translate(-50%,-50%) scale(1.12); }
+
+@media (max-width:1050px){.chef-guide{width:28vw}.speech-bubble{left:23%;width:42%}.tutorial-card{right:3%;width:68%}.piping-grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:760px){.chef-guide{left:0;width:38vw}.speech-bubble{left:7%;top:5%;width:62%;font-size:11px}.tutorial-card{top:27%;right:2%;width:94%;max-height:68%;overflow:auto}.tutorial-text{padding-right:0}.tutorial-card .voice-button{position:relative;right:auto;top:auto}.top-cake{width:300px;height:220px}.top-canvas{width:300px;height:220px}.top-cake.form-rect{width:310px;height:210px}.camera-transition{width:340px}.syrup-bottle{bottom:80px}.decor-content{overflow:auto}}
+.final-scene { position:absolute; inset:0; }
+.chef-final { position:absolute; left:2%; bottom:0; width:min(27vw,390px); max-height:60%; object-fit:contain; object-position:bottom left; z-index:6; filter:drop-shadow(0 12px 12px rgba(55,35,20,.16)); }
+.final-speech { position:absolute; left:19%; top:9%; width:min(410px,32%); background:#fff; border:5px solid #24160f; border-radius:28px; padding:15px 20px; font-weight:1000; line-height:1.3; z-index:7; box-shadow:0 10px 20px rgba(55,35,20,.12); }
+.final-speech::after { content:""; position:absolute; left:16%; bottom:-30px; width:44px; height:44px; background:#fff; border-right:5px solid #24160f; border-bottom:5px solid #24160f; transform:rotate(35deg); }
+.complete-scene .center-card { top:54%; }
+@media(max-width:760px){.chef-final{width:38vw}.final-speech{left:7%;top:5%;width:58%;font-size:12px}.complete-scene .center-card{top:58%;}}
+
+/* V6 — INTERAÇÃO MANUAL DE MISTURA E DECORAÇÃO */
+.mix-interactive{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:90px 5% 30px;pointer-events:auto;background:linear-gradient(180deg,rgba(255,248,230,.90),rgba(255,242,211,.96));}
+.mix-interactive::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(91,157,232,.10) 0 56px,transparent 56px 112px);pointer-events:none;}
+.mix-interactive>*{position:relative;z-index:1}.mix-interactive .mix-title{font-size:30px;font-weight:900;color:var(--red);text-shadow:0 2px #fff}.mix-workbench{width:min(650px,80vw);height:380px;display:grid;place-items:center;position:relative}
+.custom-mixer{position:relative;width:520px;height:350px;filter:drop-shadow(0 12px 8px rgba(75,48,28,.18));}
+.mixer-head{position:absolute;left:95px;top:28px;width:330px;height:120px;background:linear-gradient(#fff4d8,#ead4a8);border:6px solid #9a6541;border-radius:42px 42px 28px 28px;z-index:3;}
+.mixer-head::before{content:"";position:absolute;left:18px;top:12px;width:145px;height:28px;border-radius:20px;background:#fffaf0;opacity:.8}.mixer-body{position:absolute;left:155px;top:102px;width:105px;height:135px;background:linear-gradient(90deg,#f15c4d,#d9483c);border:6px solid #9a6541;border-radius:26px 26px 12px 12px;z-index:2}.mixer-body::after{content:"CAKE RUSH";position:absolute;top:46px;left:10px;right:10px;text-align:center;font-size:12px;font-weight:900;color:#fff8e7;transform:rotate(-8deg)}
+.mixer-lever{position:absolute;right:-18px;top:40px;width:60px;height:18px;border-radius:12px;background:#9a6541;transform:rotate(10deg)}
+.mixer-bowl{position:absolute;left:100px;bottom:45px;width:320px;height:155px;background:linear-gradient(#f9f0dc,#d8e9f0);border:6px solid #9a6541;border-radius:20px 20px 90px 90px;overflow:hidden;z-index:2}.mixer-batter,.bowl-batter{position:absolute;left:9%;right:9%;bottom:26%;height:42%;border-radius:50%;background:radial-gradient(circle at 35% 25%,#fff1bd,#e9b765 72%);box-shadow:inset 0 -9px 0 rgba(143,89,43,.13)}
+.whisk{position:absolute;left:50%;top:-18px;width:70px;height:115px;transform:translateX(-50%);transform-origin:50% 8%;z-index:5}.whisk::before{content:"";position:absolute;left:30px;top:0;width:10px;height:58px;border-radius:8px;background:#777}.whisk i{position:absolute;top:48px;left:34px;width:5px;height:58px;border-radius:8px;background:#777;transform-origin:50% 0}.whisk i:nth-child(1){transform:rotate(-28deg)}.whisk i:nth-child(2){transform:rotate(0)}.whisk i:nth-child(3){transform:rotate(28deg)}.whisk.spinning{animation:whiskSpin .45s linear infinite}.custom-mixer.running .mixer-bowl{animation:mixerShake .18s ease-in-out infinite alternate}.mixer-base{position:absolute;left:72px;bottom:15px;width:380px;height:58px;border-radius:30px;background:#e7cfa4;border:6px solid #9a6541;z-index:1}.mixer-start{position:absolute;right:18px;top:165px;border:4px solid #9a6541;background:#ef5b4d;color:#fff;font-weight:900;border-radius:18px;padding:12px 16px;cursor:pointer;z-index:8;box-shadow:0 5px 0 #a63c31}.mixer-start:disabled{opacity:.75;cursor:default}
+.custom-bowl-wrap{position:relative;width:540px;height:350px;display:grid;place-items:center}.custom-bowl{position:absolute;left:90px;bottom:40px;width:360px;height:190px;background:linear-gradient(#f9f0dc,#dbeef4);border:7px solid #9a6541;border-radius:30px 30px 100px 100px;overflow:hidden;box-shadow:0 15px 20px rgba(75,48,28,.16)}.custom-bowl::before{content:"";position:absolute;left:-3%;right:-3%;top:-7px;height:46px;border:7px solid #9a6541;border-radius:50%;background:#fff2d2;z-index:4}.bowl-ripple{position:absolute;left:18%;top:30%;width:64%;height:28%;border:5px solid rgba(198,137,67,.5);border-radius:50%;opacity:0}.custom-bowl.stirring .bowl-ripple{opacity:1;animation:ripple .65s ease-in-out infinite}.hand-spoon{position:fixed;left:calc(50% + 150px);top:38%;width:34px;height:180px;z-index:20;cursor:grab;touch-action:none;transform:rotate(28deg);filter:drop-shadow(0 7px 5px rgba(50,35,25,.25))}.hand-spoon.dragging{cursor:grabbing;transform:rotate(18deg) scale(1.06)}.spoon-handle{position:absolute;left:13px;top:0;width:10px;height:125px;border-radius:8px;background:linear-gradient(90deg,#a86e40,#e3b477,#9a6037);border:2px solid #754629}.spoon-head{position:absolute;left:0;bottom:0;width:36px;height:58px;border-radius:50% 50% 46% 46%;background:linear-gradient(90deg,#d49a60,#f3d09e);border:4px solid #754629}.bowl-help{position:absolute;bottom:4px;left:30px;right:30px;text-align:center;background:#fff7e8;border:2px solid #d3ae78;border-radius:14px;padding:10px;font-weight:800;color:#68492e}
+.mix-progress{width:min(650px,80vw);height:18px;border:3px solid #9a6541;border-radius:15px;background:#fff4db;overflow:hidden}.mix-fill{height:100%;width:0;background:linear-gradient(90deg,#ef5b4d,#f2b84d);transition:width .12s linear}.mix-hint{font-weight:900;color:#6d4a2d;text-align:center}.mix-back{position:absolute!important;bottom:18px;left:22px}
+@keyframes whiskSpin{to{transform:translateX(-50%) rotate(360deg)}}@keyframes mixerShake{to{transform:translateY(2px) rotate(.5deg)}}@keyframes ripple{50%{transform:scale(1.08);opacity:.35}}
+
+/* CALDA PERSISTENTE E PRECISA */
+.top-cake{isolation:isolate}.syrup-svg{position:absolute;inset:0;width:100%;height:100%;z-index:9;pointer-events:none;overflow:visible}.syrup-svg polyline{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:11;filter:drop-shadow(0 3px 2px rgba(90,45,20,.18))}.syrup-active .syrup-svg polyline{filter:drop-shadow(0 4px 3px rgba(90,45,20,.28))}.top-canvas{display:none!important}
+.piping-svg{position:absolute;inset:0;width:100%;height:100%;z-index:12;pointer-events:none;overflow:visible}.piping-svg path,.piping-svg ellipse,.piping-svg rect{fill:none;stroke:#fffaf0;stroke-width:9;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 3px 2px rgba(120,70,40,.2))}.piping-svg.piping-dot path,.piping-svg.piping-dot ellipse,.piping-svg.piping-dot rect{stroke-dasharray:1 17}.piping-svg.piping-ruffle path,.piping-svg.piping-ruffle ellipse,.piping-svg.piping-ruffle rect{stroke-width:12;stroke-dasharray:2 8}.piping-svg.piping-zigzag path,.piping-svg.piping-zigzag ellipse,.piping-svg.piping-zigzag rect{stroke-width:8;stroke-dasharray:10 7}
+.top-piping,.bottom-piping{display:none!important}.preview-list{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:8px 0 10px}.preview-list span{background:#fff1d7;border:2px solid #d3ae78;border-radius:12px;padding:5px 8px;font-size:12px;font-weight:900}.total-score-line{font-weight:900;color:#7a5636;margin:4px 0 12px}
+.game{ text-transform:uppercase; }
+
+/* V7 POLIMENTO */
+.cake-overlay{display:none!important}
+/* O FORMATO DA FORMA CONTINUA VISÍVEL MESMO NA VISTA LATERAL */
+.cake-3d.form-round .cake-side,.final-cake-body.form-round .final-cake-side{border-radius:50% / 28%;}
+.cake-3d.form-square .cake-side,.final-cake-body.form-square .final-cake-side{border-radius:24px;}
+.cake-3d.form-heart .cake-side,.final-cake-body.form-heart .final-cake-side{clip-path:polygon(50% 100%,8% 58%,4% 35%,12% 15%,30% 10%,50% 28%,70% 10%,88% 15%,96% 35%,92% 58%);}
+.cake-3d.form-star .cake-side,.final-cake-body.form-star .final-cake-side{clip-path:polygon(50% 0%,61% 29%,95% 34%,68% 55%,77% 96%,50% 73%,23% 96%,32% 55%,5% 34%,39% 29%);}
+.cake-3d.form-flower .cake-side,.final-cake-body.form-flower .final-cake-side{border-radius:48% 52% 45% 55% / 56% 46% 54% 44%;}
+.cake-3d.form-ring .cake-side,.final-cake-body.form-ring .final-cake-side{border-radius:50%;}
+/* BORDAS DE GLACÊ: BABADO REALMENTE ACOMPANHA O CONTORNO */
+.piping-svg.piping-ruffle path,.piping-svg.piping-ruffle ellipse,.piping-svg.piping-ruffle rect{stroke-width:13;stroke-dasharray:2 7;filter:drop-shadow(0 2px 2px rgba(120,70,40,.2));}
+/* PERSONAGEM: SEM IMAGEM CORTADA */
+.chef-guide-badge,.chef-final-badge{position:absolute;z-index:6;display:grid;place-items:center;width:100px;height:100px;border-radius:50%;background:#fff3df;border:5px solid #9b6042;font-size:48px;box-shadow:0 8px 18px rgba(60,40,25,.16)}
+.chef-guide-badge{left:3%;bottom:5%;}.chef-final-badge{left:4%;bottom:4%;}
+/* PREVIEW FINAL: LATERAL COM TOPO VISÍVEL E TODA A DECORAÇÃO PRESERVADA */
+.final-cake-preview{position:relative;width:280px;height:220px;margin:0 auto 16px;display:grid;place-items:center;}
+.final-cake-body{position:relative;width:235px;height:175px;}
+.final-cake-side{position:absolute;left:0;right:0;top:45px;bottom:10px;background:linear-gradient(90deg,rgba(0,0,0,.08),transparent 16%,transparent 82%,rgba(0,0,0,.1)),var(--frosting,#ffd5e3);border:5px solid #9b6042;box-shadow:inset 0 -12px 0 rgba(80,46,30,.08),0 12px 20px rgba(80,45,25,.2);overflow:hidden;z-index:2;}
+.final-cake-top{position:absolute;left:0;right:0;top:7px;height:72px;border-radius:50%;background:radial-gradient(circle at 38% 32%,rgba(255,255,255,.4),transparent 24%),var(--frosting,#ffd5e3);border:5px solid #9b6042;z-index:4;overflow:hidden;}
+.final-cake-base{position:absolute;left:10px;right:10px;bottom:0;height:22px;border-radius:50%;background:#cc885a;border:5px solid #9b6042;z-index:1;}
+.final-cake-top .final-top-topping{position:absolute;transform:translate(-50%,-50%);font-size:21px;z-index:10;line-height:1;filter:drop-shadow(0 2px 2px rgba(60,40,25,.2));}
+.final-syrup-svg{position:absolute;inset:0;width:100%;height:100%;z-index:8;pointer-events:none;overflow:visible;}
+.final-syrup-svg polyline{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:8;}
+.final-cake-side .piping-svg{position:absolute;inset:0;width:100%;height:100%;z-index:8;}
+
+/* V8 - AJUSTES SOLICITADOS */
+.splash-label{display:none!important}
+.splash-continue-btn{position:absolute;left:50%;top:80.5%;transform:translate(-50%,-50%);z-index:6;cursor:pointer;border:4px solid #d3ae78;border-radius:20px;padding:18px 42px;min-width:540px;min-height:92px;background:#fff8ea;color:var(--red);font-weight:1000;font-size:clamp(20px,2.4vw,32px);box-shadow:0 7px 0 #bc8a20;transition:transform .12s ease,box-shadow .12s ease}
+.splash-continue-btn:hover{transform:translate(-50%,-53%);box-shadow:0 10px 0 #bc8a20}
+.splash-continue-btn:active{transform:translate(-50%,-47%);box-shadow:0 3px 0 #bc8a20}
+.recipe-select{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-height:88%;overflow:auto}
+.tutorial-card{left:58%;right:auto;top:50%;transform:translate(-50%,-50%);width:min(680px,58%)}
+.tutorial-chef{position:absolute;left:2%;bottom:0;width:min(330px,25vw);max-height:72%;object-fit:contain;object-position:bottom center;z-index:6;filter:drop-shadow(0 12px 12px rgba(55,35,20,.16));pointer-events:none}
+.tutorial-speech{left:16%;top:14%;width:min(390px,30%);z-index:7}
+.chef-character{display:block;object-fit:contain;object-position:center bottom;pointer-events:none;filter:drop-shadow(0 12px 12px rgba(55,35,20,.16))}
+.oven-character-layer{position:absolute;left:0;bottom:0;width:min(560px,46%);height:100%;z-index:8;pointer-events:none;overflow:visible}.oven-character-cover{position:absolute;left:0;bottom:0;width:100%;height:100%;background:rgba(255,248,234,.96);border-top-right-radius:42px;border-bottom-right-radius:42px;box-shadow:10px 0 24px rgba(68,48,32,.10);z-index:0}
+.oven-character-layer.ready{z-index:8}
+.oven-chef{position:absolute;left:24px;bottom:0;width:350px;height:500px;object-fit:contain;object-position:bottom center;z-index:2}
+.oven-speech{left:260px;top:58px;width:min(390px,34vw);z-index:3}
+.oven-ready-card{top:84%;min-width:360px;z-index:12}
+.final-chef{position:absolute;left:1%;bottom:0;width:min(360px,25vw);max-height:72%;z-index:6}
+.final-speech{left:19%;top:10%;width:min(440px,32%);z-index:8}
+.chef-variant-sticker{position:absolute;right:3%;bottom:3%;width:min(160px,13vw);height:auto;z-index:6;filter:drop-shadow(0 6px 8px rgba(55,35,20,.16));pointer-events:none}
+.complete-chef{width:min(390px,27vw)}
+.complete-speech{left:20%;top:13%;width:min(470px,34%)}
+/* TOPO: TOPPINGS FICAM ACIMA DA CALDA */
+.top-cake .syrup-svg,.final-cake-top .final-syrup-svg{z-index:7}
+.top-cake .topping,.final-cake-top .final-top-topping{z-index:11}
+.top-cake .piping-svg,.final-cake-top .piping-svg{z-index:13}
+/* A FORMA REAL DA RODADA PERMANECE NA DECORAÇÃO E NO RESULTADO */
+.top-cake.form-heart,.final-cake-top.form-heart{clip-path:polygon(50% 96%,8% 54%,4% 31%,12% 12%,30% 7%,50% 24%,70% 7%,88% 12%,96% 31%,92% 54%)}
+.top-cake.form-star,.final-cake-top.form-star{clip-path:polygon(50% 2%,61% 31%,94% 35%,68% 55%,77% 89%,50% 70%,23% 89%,32% 55%,6% 35%,39% 31%)}
+.top-cake.form-flower,.final-cake-top.form-flower{border-radius:48% 52% 45% 55% / 56% 46% 54% 44%}
+.top-cake.form-ring,.final-cake-top.form-ring{border-radius:50%;}
+.top-cake.form-rect,.final-cake-top.form-rect{border-radius:26px}
+.final-cake-top.form-heart{border-radius:0}
+.final-cake-top.form-star{border-radius:0}
+.final-cake-top.form-ring{background:radial-gradient(circle at center,var(--cream) 0 22%,transparent 23%),radial-gradient(circle at 38% 28%,rgba(255,255,255,.4),transparent 24%),var(--frosting,#ffd5e3)}
+.final-cake-top .piping-svg{position:absolute;inset:0;width:100%;height:100%}
+.final-cake-top .piping-svg path,.final-cake-top .piping-svg ellipse,.final-cake-top .piping-svg rect{stroke-width:7}
+.final-cake-top .piping-svg.piping-ruffle path,.final-cake-top .piping-svg.piping-ruffle ellipse,.final-cake-top .piping-svg.piping-ruffle rect{stroke-width:10;stroke-dasharray:2 7}
+.final-cake-top .piping-svg.piping-zigzag path,.final-cake-top .piping-svg.piping-zigzag ellipse,.final-cake-top .piping-svg.piping-zigzag rect{stroke-width:6;stroke-dasharray:10 7}
+.final-cake-side .piping-svg{display:none!important}
+.oven-ui{z-index:10}
+.complete-scene{cursor:pointer}
+@media(max-width:1050px){.tutorial-card{left:58%;width:60%}.tutorial-chef{width:27vw}.tutorial-speech{left:13%;width:34%}.final-chef{width:29vw}.final-speech{left:18%;width:35%}.chef-variant-sticker{width:15vw}}
+@media(max-width:760px){.recipe-select{width:94%;max-height:84%}.tutorial-card{left:53%;top:55%;width:72%;padding:16px}.tutorial-chef{left:0;width:34vw;max-height:54%}.tutorial-speech{left:4%;top:5%;width:56%}.tutorial-card .voice-button{position:absolute;right:14px;top:14px}.oven-character-layer{width:92vw;height:330px;left:0}.oven-character-cover{width:72vw;height:100%;border-radius:0 34px 34px 0}.oven-chef{left:6px;width:245px;height:310px}.oven-speech{left:175px;top:18px;width:230px}.final-chef{width:35vw}.final-speech{left:8%;top:5%;width:57%;font-size:12px}.complete-chef{width:38vw}.complete-speech{left:7%;top:5%;width:58%}.chef-variant-sticker{width:21vw}}
+
+/* V9 - DECORATION / FORMS / TOPPINGS */
+.topping-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;max-height:210px;overflow:visible}.topping-card{width:auto;min-height:64px;padding:6px 4px}.topping-card span{font-size:24px}.topping-card strong{font-size:9px}.piping-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.piping-card{min-width:0;padding:5px 4px}.piping-photo{height:48px}.piping-sample{font-size:15px;letter-spacing:1px}.decor-panel{padding:12px}.decor-content{grid-template-columns:285px 1fr 270px;gap:12px}.decor-panel h3{font-size:18px}.control-label{font-size:12px}.small-copy{font-size:11px}
+.cake-3d .cake-side,.final-cake-body .final-cake-side{clip-path:none}.cake-3d .cake-top,.final-cake-body .final-cake-top{overflow:visible;transform-origin:center top}.cake-side.form-round,.final-cake-side.form-round{border-radius:50% / 22%;clip-path:none}.cake-side.form-square,.final-cake-side.form-square,.cake-side.form-rect,.final-cake-side.form-rect{border-radius:18px;clip-path:none}.cake-side.form-heart,.final-cake-side.form-heart{clip-path:polygon(50% 100%,8% 58%,4% 35%,12% 15%,30% 10%,50% 28%,70% 10%,88% 15%,96% 35%,92% 58%)}.cake-side.form-star,.final-cake-side.form-star{clip-path:polygon(50% 0%,61% 29%,95% 34%,68% 55%,77% 96%,50% 73%,23% 96%,32% 55%,5% 34%,39% 29%)}.cake-side.form-flower,.final-cake-side.form-flower{border-radius:48% 52% 45% 55% / 56% 46% 54% 44%}.cake-side.form-ring,.final-cake-side.form-ring{border-radius:50% / 25%;clip-path:none}.cake-top.form-round,.final-cake-top.form-round{border-radius:50%;transform:scaleY(.55)}.cake-top.form-square,.final-cake-top.form-square,.cake-top.form-rect,.final-cake-top.form-rect{border-radius:22px;transform:scaleY(.78)}.cake-top.form-heart,.final-cake-top.form-heart{clip-path:polygon(50% 96%,8% 52%,4% 31%,12% 12%,30% 6%,50% 24%,70% 6%,88% 12%,96% 31%,92% 52%);border-radius:0;transform:scaleY(.72)}.cake-top.form-star,.final-cake-top.form-star{clip-path:polygon(50% 2%,61% 31%,94% 35%,68% 55%,77% 92%,50% 72%,23% 92%,32% 55%,6% 35%,39% 31%);border-radius:0;transform:scaleY(.70)}.cake-top.form-flower,.final-cake-top.form-flower{border-radius:48% 52% 45% 55% / 56% 46% 54% 44%;transform:scaleY(.62)}.cake-top.form-ring,.final-cake-top.form-ring{border-radius:50%;transform:scaleY(.55)}
+.final-cake-body{height:195px}.final-cake-top{height:96px;top:0}.final-cake-side{top:52px;bottom:4px}.final-cake-top .final-top-topping{font-size:20px;z-index:22}.final-cake-top .piping-svg{z-index:24;position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.final-cake-top .final-syrup-svg{z-index:8}.final-cake-side .piping-svg{display:none!important}
+.top-cake .syrup-svg,.final-cake-top .final-syrup-svg{z-index:6}.top-cake .topping,.final-cake-top .final-top-topping{z-index:20}.top-cake .piping-svg,.final-cake-top .piping-svg{z-index:26}.piping-svg.piping-dot{display:block!important;visibility:visible!important;width:100%;height:100%;opacity:1}.piping-svg.piping-none{display:none!important}
+.piping-svg.piping-dot path,.piping-svg.piping-dot ellipse,.piping-svg.piping-dot rect{stroke:#fffaf0;stroke-width:9;stroke-linecap:round;stroke-dasharray:1 16;fill:none}.piping-svg.piping-ruffle path,.piping-svg.piping-ruffle ellipse,.piping-svg.piping-ruffle rect{stroke:#fffaf0;stroke-width:11;stroke-linecap:round;stroke-dasharray:2 7;fill:none}.piping-svg.piping-zigzag path,.piping-svg.piping-zigzag ellipse,.piping-svg.piping-zigzag rect{stroke:#fffaf0;stroke-width:7;stroke-linecap:round;stroke-dasharray:10 7;fill:none}
+.tutorial-chef{width:min(360px,27vw);max-height:70%;left:3%;bottom:0}.final-chef{width:min(380px,27vw);max-height:70%;left:2%;bottom:0}.oven-chef{width:250px;height:340px;object-fit:contain;object-position:bottom center}.chef-variant-sticker{width:min(190px,14vw)}
+
+@media(max-width:760px){.splash-continue-btn{min-width:82%;min-height:76px;padding:14px 24px;top:81%;font-size:20px}.cake-3d{width:290px}.cake-top.form-round,.final-cake-top.form-round{transform:scaleY(.52)}.cake-top.form-heart,.final-cake-top.form-heart{transform:scaleY(.68)}.cake-top.form-star,.final-cake-top.form-star{transform:scaleY(.66)}.cake-top.form-flower,.final-cake-top.form-flower{transform:scaleY(.58)}}
+
+/* V11 FINAL: cobertura pequena e discreta somente sobre a personagem do fundo */
+.oven-character-layer{position:absolute;left:0;bottom:0;width:315px;height:345px;z-index:8;pointer-events:none;overflow:visible;}
+/*.oven-character-cover{display:block !important;position:absolute;left:46px;bottom:0;width:228px;height:300px;z-index:0;pointer-events:none;background:linear-gradient(180deg,#b5b5b5 0%,#b5b5b5 31%,#b18a5e 31%,#b18a5e 100%);clip-path:polygon(17% 0,83% 0,96% 18%,91% 36%,100% 58%,89% 77%,95% 100%,8% 100%,0 80%,7% 58%,2% 40%,8% 20%);opacity:.98;}*/
+.oven-chef{position:absolute;left:44px;bottom:0;width:235px;height:312px;object-fit:contain;object-position:bottom center;z-index:2;filter:drop-shadow(0 8px 8px rgba(55,35,20,.12));}
+.oven-speech{left:248px;top:42px;width:min(370px,32vw);z-index:3;}
+@media(max-width:760px){.oven-character-layer{width:285px;height:315px;}.oven-character-cover{left:27px;width:210px;height:280px;}.oven-chef{left:27px;width:210px;height:285px;}.oven-speech{left:165px;top:18px;width:230px;}}
